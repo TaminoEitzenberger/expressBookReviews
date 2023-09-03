@@ -24,23 +24,59 @@ public_users.post("/register", (req,res) => {
 // Get the book list available in the shop
 public_users.get('/',function (req, res) {
     // Task 1: Done and tested
-  return res.status(200).send(books);
+    //return res.status(200).send(books);
+    // Task 11:
+    let getAllBooks = new Promise((resolve, reject) => {
+        if (books) {
+            resolve(books);
+        }
+        else {
+            reject(new Error('no data base connection!'))
+        }
+    })
+
+    getAllBooks.then((books) => {
+        res.status(200).send(books);
+    })
+    .catch(err => {
+        res.status(500).send(err.message);
+    })
 });
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
-    // Task 2: Done and tested
+    /*// Task 2: Done and tested
     isbn = parseInt(req.params.isbn);
     book = books[isbn];
     if (book) {
         return res.status(200).send(book);
     }
-    return res.status(300).json({message: `Book with the isbn ${req.params.isbn} not found in data base`});
+    return res.status(300).json({message: `Book with the isbn ${req.params.isbn} not found in data base`});*/
+    
+    // Taks 11:
+    
+    let getBookByISBN = new Promise((resolve, reject) => {
+        isbn = parseInt(req.params.isbn);
+        book = books[isbn];
+        if (book) {
+            resolve(book);
+        }
+        else {
+            reject(new Error(`Book with the isbn ${req.params.isbn} not found in data base`))
+        }
+    })
+
+    getBookByISBN.then((book) => {
+        res.status(200).send(book);
+    })
+    .catch(err => {
+        res.status(500).send(err.message);
+    })
  });
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
-    // Task 3: done and tested
+    /*// Task 3: done and tested
     author = req.params.author;
     filtered_books = {};
     for (let isbn in books) {
@@ -48,20 +84,68 @@ public_users.get('/author/:author',function (req, res) {
             filtered_books[isbn] = books[isbn];
         }
     }
-    return res.status(200).send(filtered_books);
+    return res.status(200).send(filtered_books);*/
+
+    // Task 12:
+    let getBooksByAuthor = new Promise((resolve, reject) => {
+        author = req.params.author;
+        filtered_books = {};
+        for (let isbn in books) {
+            if (books[isbn].author == author) {
+                filtered_books[isbn] = books[isbn];
+            }
+        }
+        if (Object.keys(filtered_books).length > 0) {
+            resolve(filtered_books);
+        }
+        else {
+            reject(new Error(`No books with the author ${author} in data base`))
+        }
+    })
+
+    getBooksByAuthor.then((book) => {
+        res.status(200).send(book);
+    })
+    .catch(err => {
+        res.status(500).send(err.message);
+    })
 });
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
-  // Task 4: done and tested
-  title = req.params.title;
-  filtered_books = {};
-  for (let isbn in books) {
-      if (books[isbn].title == title) {
-          filtered_books[isbn] = books[isbn];
-      }
-  }
-  return res.status(200).send(filtered_books);
+    /*// Task 4: done and tested
+    title = req.params.title;
+    filtered_books = {};
+    for (let isbn in books) {
+        if (books[isbn].title == title) {
+            filtered_books[isbn] = books[isbn];
+        }
+    }
+    return res.status(200).send(filtered_books);*/
+
+    // Taks 13:
+    let getBookByTitle = new Promise((resolve, reject) => {
+        title = req.params.title;
+        filtered_books = {};
+        for (let isbn in books) {
+            if (books[isbn].title == title) {
+                filtered_books[isbn] = books[isbn];
+            }
+        }
+        if (Object.keys(filtered_books).length > 0) {
+            resolve(filtered_books);
+        }
+        else {
+            reject(new Error(`No books with the title ${title} in data base`))
+        }
+    })
+
+    getBookByTitle.then((book) => {
+        res.status(200).send(book);
+    })
+    .catch(err => {
+        res.status(500).send(err.message);
+    })
 });
 
 //  Get book review
