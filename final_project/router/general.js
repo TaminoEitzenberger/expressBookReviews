@@ -1,4 +1,5 @@
 const express = require('express');
+const axios = require('axios').default;
 let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
@@ -26,21 +27,12 @@ public_users.get('/',function (req, res) {
     // Task 1: Done and tested
     //return res.status(200).send(books);
     // Task 11:
-    let getAllBooks = new Promise((resolve, reject) => {
-        if (books) {
-            resolve(books);
-        }
-        else {
-            reject(new Error('no data base connection!'))
-        }
-    })
 
-    getAllBooks.then((books) => {
+    async function getAllBooks() {
+        const result = books;
         res.status(200).send(books);
-    })
-    .catch(err => {
-        res.status(500).send(err.message);
-    })
+    }
+    getAllBooks();
 });
 
 // Get book details based on ISBN
